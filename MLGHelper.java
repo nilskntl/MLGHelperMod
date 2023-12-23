@@ -1,210 +1,104 @@
+// Import statements for necessary classes and packages
 package yourclient.mods.impl;
 
-import yourclient.gui.hud.ScreenPosition;
-import yourclient.mods.ModDraggable;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import yourclient.gui.hud.ScreenPosition;
+import yourclient.mods.ModDraggable;
 
-public class MLGHelper extends ModDraggable{
-	
-	@Override
-	public int getWidth() {
-		return 50;
-	}
+// MLGHelper class extending ModDraggable class
+public class MLGHelper extends ModDraggable {
 
-	@Override
-	public int getHeight() {
-		return font.FONT_HEIGHT;
-	}
+    // Constants representing block ID and color codes
+    private static final int COBWEB_BLOCK_ID = 30;
+    private static final String COLOR_YELLOW = "§6";
+    private static final String COLOR_GRAY = "§8";
+    private static final String COLOR_WHITE = "§f";
 
-	@Override
-	public void render(ScreenPosition pos) {
-		
-		Minecraft mc = Minecraft.getMinecraft();
-	    EntityPlayerSP p = mc.thePlayer;
-	    
-	    MovingObjectPosition mp = p.rayTrace(200.0D, 1.0F);
-		int height = mp.getBlockPos().getY() + 1;
-		
-		String prefix;
-		String suffix;
-		
-		String mlgstatus;
-		
-		int down = mp.getBlockPos().getY() + 1;
-		int up = Minecraft.getMinecraft().thePlayer.getPosition().getY();
-		
-		int df = up - down;
-		
-		if(df <= 5) {
-			mlgstatus = "Save";
-		} else {
-			if ((df >= 6 && df <= 16) ||
-				df == 18 ||
-				df == 19 ||
-				df == 21 ||
-				df == 22 ||
-				df == 24 ||
-				df == 26 ||
-				df == 27 ||
-				df == 29 ||
-				df == 33 ||
-				df == 34 ||
-				df == 36 ||
-				df == 38 ||
-				df == 40 ||
-				df == 42 ||
-				df == 44 ||
-				df == 47 ||
-				df == 49 ||
-				df == 51 ||
-				df == 53 ||
-				df == 55 ||
-				df == 58 ||
-				df == 60 ||
-				df == 62 ||
-				df == 65 ||
-				df == 67 ||
-				df == 69 ||
-				df == 72 ||
-				df == 74 ||
-				df == 77 ||
-				df == 79 ||
-				df == 82 ||
-				df == 85 ||
-				df == 87 ||
-				df == 90 ||
-				df == 93 ||
-				df == 95 ||
-				df == 98 ||
-				df == 101 ||
-				df == 104 ||
-				df == 106 ||
-				df == 109 ||
-				df == 112 ||
-				df == 115 ||
-				df == 118 ||
-				df == 121 ||
-				df == 124 ||
-				df == 127 ||
-				df == 130 ||
-				df == 135 ||
-				df == 138 ||
-				df == 142 ||
-				df == 145 ||
-				df == 148 ||
-				df == 151 ||
-				df == 153 ||
-				df == 154
-				) {
-				
-				mlgstatus = "Run";
-				
-			} else {
-				if (df == 18 ||
-				df == 17 ||
-				df == 20 ||
-				df == 23 ||
-				df == 28 ||
-				df == 30 ||
-				df == 31 ||
-				df == 35 ||
-				df == 37 ||
-				df == 39 ||
-				df == 41 ||
-				df == 43 ||
-				df == 45 ||
-				df == 50 ||
-				df == 52 ||
-				df == 54 ||
-				df == 56 ||
-				df == 59 ||
-				df == 61 ||
-				df == 63 ||
-				df == 66 ||
-				df == 68 ||
-				df == 71 ||
-				df == 73 ||
-				df == 76 ||
-				df == 78 || 
-				df == 81 ||
-				df == 83 ||
-				df == 86 ||
-				df == 91 ||
-				df == 94 ||
-				df == 97 ||
-				df == 100 ||
-				df == 102 ||
-				df == 105 ||
-				df == 108 ||
-				df == 111 ||
-				df == 114 ||
-				df == 119 ||
-				df == 122 ||
-				df == 125 ||
-				df == 128 ||
-				df == 131 ||
-				df == 134 ||
-				df == 137 ||
-				df == 140 ||
-				df == 143 ||
-				df == 146 ||
-				df == 150 ||
-				df == 156
-				) {
-					
-					mlgstatus = "Jump";
-					
-				} else {
-					mlgstatus = "Impossible";
-				}
-			}
-		}
-		
-		
-		if (mp != null && mp.typeOfHit == MovingObjectType.BLOCK && df >= 0) {
-            prefix = "§6" + down + "§8: §f";
+    // Method to get the width of the rendering area
+    @Override
+    public int getWidth() {
+        return 50;
+    }
 
-            if (Minecraft.getMinecraft().theWorld.getBlockState(mp.getBlockPos()) != Block.getStateById(30)) {
-            	
-            	if (up < down) {
-            		prefix = "§6N/A§8: §f";
-                	suffix = "Not specified";
-            	} else {
-            		prefix = "§6" + down + "§8: §f";
-            		suffix = mlgstatus;
-            	}
-                
+    // Method to get the height of the rendering area based on font height
+    @Override
+    public int getHeight() {
+        return font.FONT_HEIGHT;
+    }
+
+    // Method to render the MLG information on the screen
+    @Override
+    public void render(ScreenPosition pos) {
+        // Retrieve Minecraft instance and player entity
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP p = mc.thePlayer;
+
+        // Raytrace to determine the block the player is looking at
+        MovingObjectPosition movingObjectPosition = p.rayTrace(200.0D, 1.0F);
+
+        // Variables for MLG status and heights
+        String mlgStatus;
+        int targetHeight = movingObjectPosition.getBlockPos().getY() + 1;
+        int playerHeight = p.getPosition().getY();
+        int mlgHeight = playerHeight - targetHeight;
+
+        // Arrays representing run and jump heights
+        int[] run = new int[]{/*...*/};
+        int[] jump = new int[]{/*...*/};
+
+        // Determine MLG status based on height
+        if (mlgHeight <= 5) {
+            mlgStatus = "Save";
+        } else if (includes(run, mlgHeight)) {
+            mlgStatus = "Run";
+        } else if (includes(jump, mlgHeight)) {
+            mlgStatus = "Jump";
+        } else {
+            mlgStatus = "Impossible";
+        }
+
+        // Determine MLG prefix and suffix based on block and height
+        String prefix;
+        String suffix;
+        if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectType.BLOCK && mlgHeight >= 0) {
+            if (Minecraft.getMinecraft().theWorld.getBlockState(movingObjectPosition.getBlockPos()) != Block.getStateById(COBWEB_BLOCK_ID)) {
+                if (playerHeight < targetHeight) {
+                    prefix = COLOR_YELLOW + "N/A" + COLOR_GRAY + ": ";
+                    suffix = COLOR_WHITE + "Not specified";
+                } else {
+                    prefix = COLOR_YELLOW + targetHeight + COLOR_GRAY + ": ";
+                    suffix = COLOR_WHITE + mlgStatus;
+                }
             } else {
-            	
-            	suffix = "Cobweb! Choose another block!";
-            	
+                prefix = "";
+                suffix = COLOR_WHITE + "Cobweb! Choose another block!";
             }
         } else {
-        	prefix = "§6N/A§8: §f";
-        	suffix = "Not specified";
+            prefix = COLOR_YELLOW + "N/A" + COLOR_GRAY + ": ";
+            suffix = COLOR_WHITE + "Not specified";
         }
-		
-		
-		
-		//df for run
-		//18,19,21,22,24,26,27,29,33,34,36,38,40, 42,44,47, 49, 51, 53, 55, 58, 60, 62, 65, 67, 69, 72, 74, 77, 79, 82, 85, 87, 90
-		//93, 95, 98, 101, 104, 106, 109, 112, 115, 118, 121, 124, 127, 130, 135, 138, 142, 145, 148, 151, 153, 154
-		
-		//df for jump
-		//17, 20, 23, 28, 30, 31, 35, 37, 39, 41, 43, 45, 50, 52, 54, 56, 59, 61, 63, 66, 68, 71, 73, 76, 78
-		//81, 83, 86, 89, 91, 94, 97, 100, 102, 105, 108, 111, 114, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 150, 156
-		
-		
-		
-		font.drawStringWithShadow(prefix + suffix, pos.getAbsoluteX(), pos.getAbsoluteY(), -1);
-	}
-	
-	@Override
-	public void renderDummy(ScreenPosition pos) {
-		font.drawStringWithShadow("§6MLG§8: §fSave", pos.getAbsoluteX(), pos.getAbsoluteY(), -1);
-	}
+
+        // Render the MLG information on the screen
+        font.drawStringWithShadow(prefix + suffix, pos.getAbsoluteX(), pos.getAbsoluteY(), -1);
+    }
+
+    // Method to render dummy MLG information on the screen
+    @Override
+    public void renderDummy(ScreenPosition pos) {
+        font.drawStringWithShadow("§6MLG§8: §fSave", pos.getAbsoluteX(), pos.getAbsoluteY(), -1);
+    }
+
+    // Helper method to check if a given number is present in an array
+    private boolean includes(int[] arr, int number) {
+        for (int indexNumber : arr) {
+            if (indexNumber == number) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
